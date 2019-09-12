@@ -6,7 +6,7 @@ const config = require("./config.json");
 client.on("ready", () =>
 {
     console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
-    client.user.setGame("a game.");
+    client.user.setGame("existential crisis");
 });
 
 client.on("guildCreate", guild =>
@@ -35,18 +35,22 @@ client.on("message", async message =>
         message.channel.send(outstr);
     }
 
-	if (message.content.substring(10) === "!nametheme")
+	if (message.content.substring(0, 10) === "!nametheme")
 	{
 		const command = message.content.split(" ");
 		if (command[1] == "set")
         {
-            nametheme.writeFileSync("nametheme.txt", command.splice(2).join(" "));
-            let message = "Name theme set to: " + nametheme.readFileSync("nametheme.txt");
-            this.message.channel.send(message);
-            this.client.channels.get("525945106193448970").send(message);
+            fs.writeFileSync("nametheme.txt", command.splice(2).join(" "));
+            let sendmessage = "Name theme set to: " + fs.readFileSync("nametheme.txt");
+            message.channel.send(sendmessage);
+			
+			setTimeout(() =>
+			{
+				client.channels.get("525945106193448970").send(sendmessage);
+			}, 5000);
         }
         else
-            this.message.channel.send("Current theme: " + nametheme.readFileSync("nametheme.txt"));
+            message.channel.send("Current theme: " + fs.readFileSync("nametheme.txt"));
 	}
 });
 
