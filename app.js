@@ -27,13 +27,6 @@ client.on("message", async message =>
     if (message.content === "<@!359138435203596291>" || message.content === "<@359138435203596291>") {
         message.channel.send("What's up " + message.author);
     }
-    else if (message.content.includes("69") && message.content.match(/<:[a-zA-Z0-9_]+:[0-9]*69[0-9]*>/g) === null && message.content.match(/<@!?[0-9]*69[0-9]*>/g) === null && message.content.match(/<#[0-9]*69[0-9]*>/g) === null && !message.content.includes("http"))
-    {
-        let outstr = "I spotted a 69 in your message:\n";
-        outstr += message.content.split("69")[0] + "**69**" + message.content.split("69").slice(1).join("69") + "\n";
-        outstr += "Nice!";
-        message.channel.send(outstr);
-    }
 
 	if (message.content.substring(0, 10) === "!nametheme")
 	{
