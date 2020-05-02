@@ -56,7 +56,7 @@ client.on("message", async message =>
 	{
 		const command = message.content.split(" ");
 		if (command[1] == "help")
-			message.channel.send("```Help with stonks:\n\n!stonks help - Displays this menu\n!stonks count - Shows how many stonks you currently own\n!stonks buyprice [count] - Displays current price of buying [count] stonks\n!stonks sellprice [count] - Displays the current price of selling [count] stonks\n!stonks sell [count] - Sells [count] of your stonks\n\nTo buy stonks, run \"!stonks update\" to update the stock price, \"!stonks price [count]\" to see how much it will cost, then run \"\\pay nogmBOT [cost]\" to pay the bot. The boy will auto-detect who paid it and allocate the correct amount of stonks to that user.```");
+			message.channel.send("```Help with stonks:\n\n!stonks help - Displays this menu\n!stonks count - Shows how many stonks you currently own\n!stonks buyprice [count] - Displays current price of buying [count] stonks\n!stonks sellprice [count] - Displays the current price of selling [count] stonks\n!stonks sell [count] - Sells [count] of your stonks\n!stonks value - Gets the current value of your stonks in timcoin (the amount you would receive if you sold all of your stonks)\n\nTo buy stonks, run \"!stonks update\" to update the stock price, \"!stonks price [count]\" to see how much it will cost, then run \"\\pay nogmBOT [cost]\" to pay the bot. The boy will auto-detect who paid it and allocate the correct amount of stonks to that user.```");
 		else if (command[1] == "buyprice")
 		{
 			client.channels.get("498927226838974476").send("\\timcoins").then(() =>
@@ -104,23 +104,47 @@ client.on("message", async message =>
 			else
 				message.channel.send("<@" + message.author.id + ">, you currently own " + stonks[message.author.id] + " stonks.");
 		}
+		else if (command[1] == "value")
+		{
+			if (!stonks.hasOwnProperty(message.author.id))
+				message.channel.send("You do not own any stonks!");
+			else
+				client.channels.get("498927226838974476").send("\\timcoins").then(() =>
+				{
+					client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
+					{
+						stonkprice = parseFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+						let total = 0;
+						let stonk = stonkprice;
+						for (let i = 0; i < stonks[message.author.id]; i++)
+						{
+							stonk -= stonk * 0.05;
+							total += stonk * 0.05;
+						}
+						message.channel.send("You currently own " + total + " timcoins in stonks.");
+					});
+				});
+		}
 	}
 	else if (message.content.substring(0, 12) == "\\pay nogmBOT")
 	{
-		client.channels.get("498927226838974476").send("\\timcoins").then(() =>
+		client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 		{
-			client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
-			{
-				if (/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content) != null)
-					stonkprice = parseFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
-				else
+			if (collected.first().content == "payment success")
+				client.channels.get("498927226838974476").send("\\timcoins").then(() =>
+				{
 					client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 					{
-						console.log(stonkprice);
+						stonkprice = parseFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 						let stonk = stonkprice;
 						let price = parseFloat(message.content.substring(13));
 						let bought = 0;
 						let total = 0;
+						if (stonkprice == 0)
+						{
+							message.channel.send("Please run `!stonks update`. Your timcoin cannot be refunded at this time.");
+							return;
+						}
 		
 						while (total < price)
 						{
@@ -141,36 +165,9 @@ client.on("message", async message =>
 				
 						fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
 					});
-				console.log(stonkprice);
-				let stonk = stonkprice;
-				let price = parseFloat(message.content.substring(13));
-				let bought = 0;
-				let total = 0;
-				if (stonkprice == 0)
-				{
-					message.channel.send("Please run `!stonks update`. Your timcoin cannot be refunded at this time.");
-					return;
-				}
-
-				while (total < price)
-				{
-					console.log("total:" + total);
-					console.log("price: " + price);
-					console.log("bought: " + bought);
-					total += stonk * 0.05;
-					stonk += stonk * 0.05;
-					bought++;
-				}
-				bought--;
-
-				if (bought < 0) bought = 0;
-				if (!stonks.hasOwnProperty(message.author.id))
-					stonks[message.author.id] = 0;
-				stonks[message.author.id] += bought;
-				message.channel.send("With what you have paid me, you have earned `" + bought + "` stonks.");
-		
-				fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
-			});
+				});
+			else
+				message.channel.send("The transaction failed to go through... I cannot give you any stonks.");
 		});
 	}
 });
