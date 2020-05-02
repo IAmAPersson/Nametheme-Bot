@@ -2,6 +2,9 @@
 const fs = require("fs");
 const client = new Discord.Client();
 const config = require("./config.json");
+let stonks = JSON.parse(fs.readFileSync("./stonks.json"));
+let stonkprice = 0;
+let stonkslastupdated = 0;
 
 client.on("ready", () =>
 {
@@ -22,7 +25,7 @@ client.on("guildDelete", guild =>
 client.on("message", async message =>
 {
 	console.log(message.author + ": " + message.content);
-	if (message.author.bot) return;
+	//if (message.author.bot) return;
 
 	if (message.content === "<@!359138435203596291>" || message.content === "<@359138435203596291>")
 		message.channel.send("What's up " + message.author);
@@ -46,6 +49,105 @@ client.on("message", async message =>
 	}
 	else if (message.content.substring(0, 5) === "!ping")
 		message.channel.send("Pong!");
+	else if (message.content.substring(0, 28) == "!informLanceThatHisBotIsDown")
+		message.channel.send("Lance...");
+	else if (message.content.substring(0, 4) == "!say" && message.author.id == "302215274252337152")
+		message.channel.send(message.content.substring(5));
+	else if (message.content.substring(0, 7) == "!stonks")
+	{
+		const command = message.content.split(" ");
+		if (command[1] == "help")
+			message.channel.send("```Help with stonks:\n\n!stonks help - Displays this menu\n!stonks count - Shows how many stonks you currently own\n!stonks buyprice [count] - Displays current price of buying [count] stonks\n!stonks sellprice [count] - Displays the current price of selling [count] stonks\n!stonks sell [count] - Sells [count] of your stonks\n!stonks update - Updates the current stock price\n\nTo buy stonks, run \"!stonks update\" to update the stock price, \"!stonks price [count]\" to see how much it will cost, then run \"\\pay nogmBOT [cost]\" to pay the bot. The boy will auto-detect who paid it and allocate the correct amount of stonks to that user.```");
+		else if (command[1] == "buyprice")
+		{
+			updateStonkprice();
+			let total = 0;
+			let stonk = stonkprice;
+			for (let i = 0; i < parseInt(command[2]); i++)
+			{
+				total += stonk * 0.05;
+				stonk += stonk * 0.05;
+			}
+			message.channel.send("To buy " + command[2] + " stonks will cost `" + total + "` timcoins. Note that this is subject to when prices were last updated.");
+		}
+		else if (command[1] == "sellprice")
+		{
+			updateStonkprice();
+			let total = 0;
+			let stonk = stonkprice;
+			for (let i = 0; i < parseInt(command[2]); i++)
+			{
+				stonk -= stonk * 0.05;
+				total += stonk * 0.05;
+			}
+			message.channel.send("Selling " + command[2] + " stonks will earn you `" + total + "` timcoins. Note that this is subject to when prices were last updated.");
+		}
+		else if (command[1] == "update")
+		{
+			updateStonkprice();
+			message.channel.send("Stonk prices have been updated.");
+		}
+		else if (command[1] == "sell")
+		{
+			message.channel.send("Unable to sell stonks at the moment. Just buy and let the value grow!");
+		}
+		else if (command[1] == "count")
+		{
+			client.channels.get("498927226838974476").send("\\timcoins");
+			if (!stonks.hasOwnProperty(message.author.id))
+				message.channel.send("<@" + message.author.id + ">, you current do not own any stonks.");
+			else
+				message.channel.send("<@" + message.author.id + ">, you currently own " + stonks[message.author.id] + " stonks.");
+		}
+	}
+	else if (message.content.substring(0, 11) == "nogmBOT has")
+	{
+		stonkprice = parseFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(message.content)[1]);
+	}
+	else if (message.content.substring(0, 12) == "\\pay nogmBOT")
+	{
+		updateStonkprice();
+
+		console.log("triggered");
+		let stonk = stonkprice;
+		let price = parseFloat(message.content.substring(13));
+		let bought = 0;
+		let total = 0;
+		if (stonkprice == 0)
+		{
+			message.channel.send("Please run `!stonks update`. Your timcoin cannot be refunded at this time.");
+			return;
+		}
+
+		while (total < price)
+		{
+			console.log("total:" + total);
+			console.log("price: " + price);
+			console.log("bought: " + bought);
+			total += stonk * 0.05;
+			stonk += stonk * 0.05;
+			bought++;
+		}
+		bought--;
+
+		if (bought < 0) bought = 0;
+		if (!stonks.hasOwnProperty(message.author.id))
+			stonks[message.author.id] = 0;
+		stonks[message.author.id] += bought;
+		message.channel.send("With what you have paid me, you have earned `" + bought + "` stonks.");
+
+		fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
+		client.channels.get("498927226838974476").send("\\timcoins");
+	}
 });
 
 client.login(config.token);
+
+function updateStonkprice()
+{
+	client.channels.get("498927226838974476").send("\\timcoins");
+	while (Date.now() - stonkslastupdated > 1000)
+		process.nextTick();
+	stonkslastupdated = Date.now();
+	return;
+}
