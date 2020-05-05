@@ -208,9 +208,18 @@ client.on("message", async message =>
 	else if (/\<\@\!?359138435203596291\> ([0-9]+) has been accepted/.exec(message.content) != null)
 	{
 		let code = /\<\@\!?359138435203596291\> ([0-9]+) has been accepted/.exec(message.content)[1];
-		stonks[purchasequeue[code].id] += purchasequeue[code].stonks;
-		fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
-		message.channel.send("<@!" + purchasequeue[code].id + ">, you have been allotted `" + purchasequeue[code].stonks + "` stonks!");
+		if (purchasequeue.hasOwnProperty(code))
+		{
+			stonks[purchasequeue[code].id] += purchasequeue[code].stonks;
+			fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
+			message.channel.send("<@!" + purchasequeue[code].id + ">, you have been allotted `" + purchasequeue[code].stonks + "` stonks!");
+			
+			delete purchasequeue[code];
+		}
+		else
+		{
+			message.channel.send("You already purchased stonks with this code! Please start a new payment to buy more stonks.");
+		}
 	}
 });
 
