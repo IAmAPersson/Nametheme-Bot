@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "discord.js": "^11.5.1"
+    "discord.js": "^11.5.1",
+    "normal-distribution": "0.0.9",
+    "random-normal": "^1.0.0"
   }
 }
