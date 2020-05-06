@@ -228,7 +228,7 @@ client.login(config.token);
 function verifyInt(num)
 {
 	let newnum = parseInt(num);
-	if (!isNaN(newnum) && newnum > 0)
+	if (!isNaN(newnum) && newnum > 0 && newnum < 10000)
 		return newnum;
 	else
 		return 1;
@@ -237,7 +237,7 @@ function verifyInt(num)
 function verifyFloat(num)
 {
 	let newnum = parseFloat(num);
-	if (!isNaN(newnum) && newnum > 0)
+	if (!isNaN(newnum) && newnum > 0 && newnum < 10000)
 		return newnum;
 	else
 		throw num;
