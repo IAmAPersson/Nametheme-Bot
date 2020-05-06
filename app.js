@@ -86,7 +86,7 @@ client.on("message", async message =>
 						total += stonk * (stonkmult.mult / 100);
 						stonk += stonk * (stonkmult.mult / 100);
 					}
-					message.channel.send("To buy " + command[2] + " stonks will cost `" + (total + (total * 0.01)) + "` timcoins.");
+					message.channel.send("To buy " + verifyInt(command[2]) + " stonks will cost `" + (total + (total * 0.01)) + "` timcoins.");
 				});
 			});
 		}
@@ -104,7 +104,7 @@ client.on("message", async message =>
 						stonk -= stonk * (stonkmult.mult / 100);
 						total += stonk * (stonkmult.mult / 100);
 					}
-					message.channel.send("Selling " + command[2] + " stonks will earn you `" + total + "` timcoins.");
+					message.channel.send("Selling " + verifyInt(command[2]) + " stonks will earn you `" + total + "` timcoins.");
 				});
 			});
 		}
