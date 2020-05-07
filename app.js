@@ -114,7 +114,7 @@ client.on("message", async message =>
 			{
 				message.channel.send("No.");
 			}
-			else if (stonks.hasOwnProperty(message.author.id) && stonks[message.author.id] >= parseInt(command[2]))
+			else if (stonks.hasOwnProperty(message.author.id) && stonks[message.author.id] >= verifyInt(command[2]))
 			{
 				client.channels.get("498927226838974476").send("\\timcoins").then(() =>
 				{
@@ -130,7 +130,7 @@ client.on("message", async message =>
 						}
 						client.channels.get("498927226838974476").send("\\pay " + message.author.id + " " + total);
 						
-						stonks[message.author.id] -= parseInt(command[2]);
+						stonks[message.author.id] -= verifyInt(command[2]);
 						fs.writeFileSync("./stonks.json", JSON.stringify(stonks));
 					});
 				});
