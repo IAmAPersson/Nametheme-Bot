@@ -205,7 +205,7 @@ client.on("message", async message =>
 			});
 		}
 	}
-	else if (/\<\@\!?359138435203596291\> ([0-9]+) has been accepted/.exec(message.content) != null)
+	else if (/\<\@\!?359138435203596291\> ([0-9]+) has been accepted/.exec(message.content) != null && message.author.id === "647054485465595914")
 	{
 		let code = /\<\@\!?359138435203596291\> ([0-9]+) has been accepted/.exec(message.content)[1];
 		if (purchasequeue.hasOwnProperty(code))
