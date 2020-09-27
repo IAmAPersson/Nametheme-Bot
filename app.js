@@ -78,7 +78,7 @@ client.on("message", async message =>
 			{
 				client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 				{
-					stonkprice = verifyFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+					stonkprice = verifyFloat(/nogm has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 					let total = 0;
 					let stonk = stonkprice;
 					for (let i = 0; i < verifyInt(command[2]); i++)
@@ -96,7 +96,7 @@ client.on("message", async message =>
 			{
 				client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 				{
-					stonkprice = verifyFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+					stonkprice = verifyFloat(/nogm has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 					let total = 0;
 					let stonk = stonkprice;
 					for (let i = 0; i < verifyInt(command[2]); i++)
@@ -120,7 +120,7 @@ client.on("message", async message =>
 				{
 					client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 					{
-						stonkprice = verifyFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+						stonkprice = verifyFloat(/nogm has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 						let total = 0;
 						let stonk = stonkprice;
 						for (let i = 0; i < verifyInt(command[2]); i++)
@@ -154,7 +154,7 @@ client.on("message", async message =>
 				{
 					client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 					{
-						stonkprice = verifyFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+						stonkprice = verifyFloat(/nogm has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 						let total = 0;
 						let stonk = stonkprice;
 						for (let i = 0; i < stonks[message.author.id]; i++)
@@ -166,7 +166,7 @@ client.on("message", async message =>
 					});
 				});
 		}
-		else if (command[1] == "stats")
+		else if (command[1] == "status")
 		{
 			if (stonkmult.mult > 10)
 				message.channel.send("SELL FUCKING EVERYTHING.");
@@ -189,7 +189,7 @@ client.on("message", async message =>
 			{
 				client.channels.get("498927226838974476").awaitMessages(response1 => response1.author.id === "647054485465595914", { "max": 1 }).then(collected =>
 				{
-					stonkprice = verifyFloat(/nogmBOT has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
+					stonkprice = verifyFloat(/nogm has `([0-9]+\.[0-9]+)` TIMCOINS/.exec(collected.first().content)[1]);
 					let total = 0;
 					let stonk = stonkprice;
 					for (let i = 0; i < verifyInt(command[2]); i++)
